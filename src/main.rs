@@ -1,14 +1,16 @@
+mod mlp;
+mod epso;
+mod consts;
+mod activations;
 
-fn relu(input: f32) -> f32{
-    if input>1.0 {
-        return 1.0
-    } 
-    else if input<0.0 {
-        return 0.0;
-    }
-    return input;
-}
+use mlp::MLP;
+use ndarray::arr1;
 
 fn main() {
-    println!("Hello, world!");
+    rand::random::<f64>();
+    
+    let m: MLP = MLP::new();
+    let output = m.output(arr1(&[0.001,0.001,0.001]));
+    println!("{:?}", output);
 }
+
