@@ -10,7 +10,7 @@ fn main() {
     rand::random::<f64>();
     
     let m: MLP = MLP::new();
-    let output = m.output(arr1(&[0.001,0.001,0.001]));
+    let output = m.output(&arr1(&[0.00001,0.00001,0.00001]));
     println!("{:?}", output);
 }
 

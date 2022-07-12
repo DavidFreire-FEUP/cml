@@ -87,7 +87,7 @@ impl MLP {
         Self {layers}
     }
 
-    pub fn output(mut self, input: Array1<f32>) -> Array1<f32> {
+    pub fn output(mut self, input: &Array1<f32>) -> Array1<f32> {
         for i in 0..self.layers.len() {
             if i == 0 {
                 self.layers[i].values = input.clone();
@@ -97,7 +97,6 @@ impl MLP {
                 self.layers[i].excite(&inputs);
             }
         }
-        let output = self.layers[self.layers.len()-1].values.clone();
-        return output;
+        return self.layers.last().unwrap().values.clone();
     }
 }
