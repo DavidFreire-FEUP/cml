@@ -91,11 +91,10 @@ impl MLP {
         for i in 0..self.layers.len() {
             if i == 0 {
                 self.layers[i].values = input.clone();
+                continue;
             }
-            else {
-                let inputs = self.layers[i-1].values.clone();
-                self.layers[i].excite(&inputs);
-            }
+            let inputs = self.layers[i-1].values.clone();
+            self.layers[i].excite(&inputs);
         }
         return self.layers.last().unwrap().values.clone();
     }
