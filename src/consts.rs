@@ -1,5 +1,5 @@
 use crate::mlp::{ActivFun};
-use crate::activations::{atann, relu};
+use crate::activations::atann;
 
 pub const HIDDEN_LAYERS:usize = 3;
 pub const HIDDEN_SIZE:usize = 10;
