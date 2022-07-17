@@ -1,16 +1,10 @@
 mod mlp;
 mod epso;
-mod consts;
 mod activations;
-
-use mlp::MLP;
-use ndarray::arr1;
+mod util;
+mod test;
 
 fn main() {
-    rand::random::<f64>();
-    
-    let m: MLP = MLP::new();
-    let output = m.output(&arr1(&[0.00001,0.00001,0.00001]));
-    println!("{:?}", output);
+    println!("Hello world!");
 }
 
