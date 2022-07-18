@@ -176,7 +176,6 @@ impl MLP {
         }
 
         bias = arr1(&chromossome[i..i+*neuron_width]);
-        i += *neuron_width;
 
         layers.push(
             NeuronLayer::new(

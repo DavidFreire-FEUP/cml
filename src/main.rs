@@ -5,9 +5,6 @@ mod util;
 mod test;
 mod importer;
 
-
-use std::borrow::BorrowMut;
-
 use epso::Swarm;
 use importer::{TRAINING_IMAGES, TRAINING_LABELS};
 use mlp::ActivFun;
