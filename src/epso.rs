@@ -2,18 +2,18 @@ use rand::prelude::*;
 use rand::distributions::StandardNormal;
 
 #[derive(Clone)]
-struct Particle{
+pub struct Particle{
     chromossome: Vec<f32>,
     wi: f32,
     wm: f32,
     wc: f32,
-    pub fitness: i64,
-    fitfunc: fn(&Vec<f32>) -> i64,
+    pub fitness: i32,
+    fitfunc: fn(&Vec<f32>) -> i32,
     mutation_rate: f32
 }
 
 impl Particle {
-    pub fn new(chromossome: Vec<f32>, mutation_rate: &f32, wi:f32, wm:f32, wc:f32, fitfunc: fn(&Vec<f32>)->i64) -> Self {
+    pub fn new(chromossome: Vec<f32>, mutation_rate: &f32, wi:f32, wm:f32, wc:f32, fitfunc: fn(&Vec<f32>)->i32) -> Self {
         let mut ret = Self {
             chromossome,
             wi,
@@ -44,7 +44,7 @@ pub struct Swarm{
     particles: Vec<Particle>,
     ancestors: Vec<Particle>,
     best_ancestors: Vec<Particle>,
-    global_best: Particle,
+    pub global_best: Particle,
     gen: i32, // generation count
 }
 
@@ -56,17 +56,17 @@ impl Swarm {
         wi: &f32,
         wm: &f32,
         wc: &f32,
-        fitness_func: fn(&Vec<f32>) -> i64,
+        fitness_func: fn(&Vec<f32>) -> i32,
         ) -> Self {
 
         let mut particles = Vec::with_capacity(*size);
         let mut ancestors = Vec::with_capacity(*size);
 
-        for i in 0..*size{
+        for _ in 0..*size{
             let mut random_particle_chromossome: Vec<f32> = Vec::with_capacity(*chromossome_size);
             let mut random_ancestor_chromossome: Vec<f32> = Vec::with_capacity(*chromossome_size);
 
-            for i in 0..*chromossome_size{
+            for _ in 0..*chromossome_size{
                 random_particle_chromossome.push(rand::random());
                 random_ancestor_chromossome.push(rand::random());
             }
@@ -79,7 +79,7 @@ impl Swarm {
             );
         }
 
-        let mut best_ancestors = ancestors.clone();
+        let best_ancestors = ancestors.clone();
 
         let global_best = particles.iter().max_by_key(|particle| particle.fitness).unwrap().clone();
 
@@ -96,7 +96,7 @@ impl Swarm {
                 {
                     // TODO
                 }
-            )
+            );
     }
     
     /// Create a mutated child for each particle and adds it to the swarm (duplicates population)
