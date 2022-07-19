@@ -3,7 +3,7 @@ use rand::distributions::StandardNormal;
 
 #[derive(Clone)]
 pub struct Particle{
-    chromossome: Vec<f32>,
+    pub chromossome: Vec<f32>,
     wi: f32,
     wm: f32,
     wc: f32,
@@ -58,17 +58,17 @@ impl Swarm {
         wc: &f32,
         fitness_func: fn(&Vec<f32>) -> i32,
         ) -> Self {
-
+        
         let mut particles = Vec::with_capacity(*size);
         let mut ancestors = Vec::with_capacity(*size);
-
-        for _ in 0..*size{
+        println!("Generating random particles and ancestors");
+        let mut rng = rand::thread_rng();
+        for i in 0..*size{
             let mut random_particle_chromossome: Vec<f32> = Vec::with_capacity(*chromossome_size);
             let mut random_ancestor_chromossome: Vec<f32> = Vec::with_capacity(*chromossome_size);
-
             for _ in 0..*chromossome_size{
-                random_particle_chromossome.push(rand::random());
-                random_ancestor_chromossome.push(rand::random());
+                random_particle_chromossome.push(rng.gen());
+                random_ancestor_chromossome.push(rng.gen());
             }
 
             particles.push(
@@ -77,7 +77,9 @@ impl Swarm {
             ancestors.push(
                 Particle::new(random_ancestor_chromossome, mutation_rate, *wi, *wm,* wc, fitness_func)
             );
+            println!("Particle nº {}", i);
         }
+        println!("Done");
 
         let best_ancestors = ancestors.clone();
 
@@ -89,14 +91,41 @@ impl Swarm {
     /// Moves the particles around according to inertia, ancestors and global best
     pub fn travel(&mut self) {
         self.gen += 1;
+        let mut new_particles: Vec<Particle> = Vec::with_capacity(self.particles.len()); 
+        for i in 0..self.particles.len() {
+            let mut new_chromossome: Vec<f32> = self.particles[i].chromossome.clone();
+            for j in 0..self.particles[0].chromossome.len() {
+                let mut deviation: f32;
 
-        self.particles
-            .iter_mut()
-            .for_each(|particle: &mut Particle| 
-                {
-                    // TODO
-                }
-            );
+                // Follow inertia
+                deviation = 1.0/(self.gen as f32) * self.particles[i].wi * (self.particles[i].chromossome[j] - self.ancestors[i].chromossome[j]);
+
+                // Follow best ancestor
+                deviation += (SmallRng::from_entropy().sample(StandardNormal) as f32) * self.particles[i].wm*(self.best_ancestors[i].chromossome[j]-self.particles[i].chromossome[j]);
+
+                // Follow global best
+                deviation += (SmallRng::from_entropy().sample(StandardNormal) as f32)*self.particles[i].wc*(self.global_best.chromossome[j]-self.particles[i].chromossome[j]);
+                
+                new_chromossome[j] += deviation;
+            }
+            new_particles.push(Particle::new(new_chromossome, &self.particles[i].mutation_rate, self.particles[i].wi.clone(), self.particles[i].wm.clone(), self.particles[i].wc.clone(), self.particles[i].fitfunc.clone()));
+        }
+
+        // Update ancestors
+        self.ancestors = self.particles.clone();
+        
+        // Update best ancestors
+        for i in 0..self.best_ancestors.len() {
+            if self.ancestors[i].fitness > self.best_ancestors[i].fitness {
+                self.best_ancestors[i] = self.ancestors[i].clone();
+            }
+        }
+
+        // Update particles
+        self.particles = new_particles;
+
+        // Update global best
+        self.global_best = self.particles.iter().max_by_key(|particle| particle.fitness).unwrap().clone();
     }
     
     /// Create a mutated child for each particle and adds it to the swarm (duplicates population)

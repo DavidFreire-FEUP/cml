@@ -6,6 +6,8 @@ use lazy_static::lazy_static;
 lazy_static! {
     pub static ref TRAINING_IMAGES: Vec<Vec<u8>> = import_images("data/train-images-idx3-ubyte".to_string());
     pub static ref TRAINING_LABELS: Vec<u8> = import_labels("data/train-labels-idx1-ubyte".to_string());
+    pub static ref TESTING_IMAGES: Vec<Vec<u8>> = import_images("data/t10k-images-idx3-ubyte".to_string());
+    pub static ref TESTING_LABELS: Vec<u8> = import_labels("data/t10k-labels-idx1-ubyte".to_string());
 }
 
 pub fn import_images(filename: String) -> Vec<Vec<u8>>{
